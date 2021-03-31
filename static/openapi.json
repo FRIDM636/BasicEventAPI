@@ -1,0 +1,220 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "event API",
+    "description": "A very light event  API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/events/": {
+      "get": {
+        "description": "Get the list of all events",
+        "responses": {
+          "200": {
+            "description": "The returned list of events"
+          }
+        }
+      }     
+    },
+    "/events/{EventID}": {
+      "summary": "get event by id",
+      "description": "Get a dictionarry to the event by ID",
+      "post": {
+        "description": "Add a new event to the database",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "EventID",
+            "in": "path",
+            "description": "ID of event to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "description": "the event model to be added",
+            "schema": {
+              "$ref": "#/definitions/event"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The event was succefullu created"
+          },
+          "400": {
+            "description": "Bad formatted event"
+          },
+          "500": {
+            "description": "Server error, database commit failed"
+          }
+        }
+      },
+      "get": {
+        "summary": "Find event by ID",
+        "description": "Returns a single event",
+        "operationId": "geteventById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "EventID",
+            "in": "path",
+            "description": "ID of event to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "event not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Modify event by ID",
+        "description": "Modify Title, Author and ...",
+        "operationId": "",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "EventID",
+            "in": "path",
+            "description": "ID of event to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Updated event infos",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/event"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "bad event record format"
+          },
+          "404": {
+            "description": "event not found"
+          },
+          "500": {
+            "description": "Server error, database commit failed"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an event from the database",
+        "parameters": [
+          {
+            "name": "EventID",
+            "in": "path",
+            "type": "integer",
+            "format": "int64",
+            "required": true
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "schema":
+              {
+                "type": "string"
+              }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "sucessfully deleted event"
+          },
+          "401": {
+            "description": "Authenitcation problem"
+          },
+          "403": {
+            "description": "Access denied "
+          },
+          "404": {
+            "description": "can not find the event"
+          }
+        }
+      }
+    },
+    "/events/login":{
+      "get":{
+        "description": "Basic HTTP authentication",
+        "produces":[
+          "application/json"
+        ],
+        "security": {
+          "basicAuth": []
+        },
+        "responses": {
+          "200": { 
+            "description": "Successful authentication"
+          },
+          "401": {
+            "description": "Authorization problem "
+          }
+
+        }
+      }
+    }
+  },
+  "definitions": {
+    "event": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "string"
+        },
+        "stop": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "Unauthorized":{
+        "description": "Unauthorized access",
+        "headers":{
+          "WWW_Authenticate": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
